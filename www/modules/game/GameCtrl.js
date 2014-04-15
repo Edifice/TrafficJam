@@ -45,17 +45,6 @@ app.controller('GameCtrl', function(
 	$scope.backgroundStyle = {
 		'background-position-y': '0px'		
 	}
-
-	$scope.$watch('backgroundPosition', function(_val) {
-		if (_val > 32000000) {
-			_val = 0;
-		};
-		$scope.backgroundStyle['background-position-y'] = _val + 'px';
-	});
-	$scope.$watch('player.position', function(_val) {
-		$scope.player.style['left'] = _val + '%';
-	});
-
 	/////////////// Helper functions
 	var random = function(min,max){
 		return Math.floor(Math.random()*(max-min+1)+min);
@@ -116,8 +105,14 @@ app.controller('GameCtrl', function(
 	}
 
 	var updateBackground = function(){
-		$scope.backgroundPosition += $scope.player.speed / (speedModifier / 2);
-		$scope.score = Math.round($scope.backgroundPosition / 80);
+		var _val = $scope.backgroundPosition + ($scope.player.speed / (speedModifier / 2));
+
+		if (_val > 32000000) {
+			_val = 0;
+		};
+		$scope.backgroundPosition = _val;
+		$scope.backgroundStyle['background-position-y'] = _val + 'px';
+		$scope.score = Math.round(_val / 80);
 	}
 
 	var isDeviceOrientationEventRegistered = false;
@@ -133,6 +128,7 @@ app.controller('GameCtrl', function(
 				if (newPosition > 5 && newPosition < (95 - $scope.player.width)) {
 					$scope.player.position = newPosition;
 					$scope.player.speed -= Math.abs(modifier); // when turning, we reduce the speed a little
+					$scope.player.style['left'] = newPosition + '%';
 				};
 			}, function(){
 				console.error('uhh, baj van');
@@ -160,6 +156,7 @@ app.controller('GameCtrl', function(
 				if (newPosition > 5 && newPosition < (95 - $scope.player.width)) {
 					$scope.player.position = newPosition;
 					$scope.player.speed -= Math.abs(globalTiltingModifier / 2); // when turning, we reduce the speed a little
+					$scope.player.style['left'] = newPosition + '%';
 					globalTiltingModifierButton = 0;
 				};
 				isDeviceOrientationEventRegistered = true;
