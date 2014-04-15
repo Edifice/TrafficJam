@@ -36,11 +36,20 @@
 	z-index: 9;
 }
 
+#gameover{
+	position: absolute;
+	background: rgba(0,0,0,.5);
+	width: 100%;
+	height: 100%;
+	z-index: 11;
+}
+
 #break{
 	position: absolute;
 	width: 100%;
 	height: 50%;
 	bottom: 0;
+	z-index: 10;
 }
 	#break.active{
 		background: rgba(200,0,0,.2);
@@ -56,14 +65,15 @@
 
 #player{
 	background: blue;
-	bottom: 20px;
+	bottom: 4%;
 }
 
 .car{
 	position: absolute;
 	background: yellow;
 	width: 16%;
-	height: 90px;
+	height: 16%;
+	z-index: 5;
 }
 
 .line1{

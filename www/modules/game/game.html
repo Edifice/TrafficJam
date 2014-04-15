@@ -3,10 +3,20 @@
 <div id="topControls">
 	<button ng-click="exitToMenu()">X</button>
 	<span>{{roundSpeed(player.speed)}} km/h</span>
+	<span> - {{score}} m</span>
 </div>
 
 <div id="overlay">
 	<div id="break" ng-class="{'active': player.breaking}"></div>
 
-	<div id="player" class="car line4" ng-style="player.style"></div>
+	<div id="player" class="car" ng-style="player.style"></div>
+
+	<div ng-repeat="obj in gameObjects" class="car" ng-class="{1: 'line1', 2: 'line2', 3: 'line3', 4: 'line4'}[obj.line]" ng-style="obj.style"></div>
+
+	<div id="gameover" ng-show="gameOver">
+		<div class="content padding has-header">
+			<p>Ohh crap, again??</p>
+			<button ng-click="startAgain()" class="button button-block button-positive">Try again!</button>
+		</div>
+	</div>
 </div>
