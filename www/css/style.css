@@ -1,0 +1,83 @@
+
+/********  Layout  *********/
+/*
+
+  5% space - not used
+  20% space - line 1
+  2% space - not used
+  20% space - line 2
+  2% space - not used
+  20% space - line 3
+  2% space - not used
+  20% space - line 4
+  5% space - not used
+
+ */
+
+/********   Game   *********/
+#background{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	bottom: 0;
+	background-image: url('../img/road.jpg');
+	background-size: 100%;
+	background-position-y: 0px;
+	z-index: 0;
+}
+
+#overlay{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	bottom: 0;
+	z-index: 9;
+}
+
+#break{
+	position: absolute;
+	width: 100%;
+	height: 50%;
+	bottom: 0;
+}
+	#break.active{
+		background: rgba(200,0,0,.2);
+	}
+
+#topControls{
+	position: absolute;
+	width: 100%;
+	height: 50px;
+	top: 0;
+	z-index: 10;
+}
+
+#player{
+	background: blue;
+	bottom: 20px;
+}
+
+.car{
+	position: absolute;
+	background: yellow;
+	width: 16%;
+	height: 90px;
+}
+
+.line1{
+	left: 7%;
+}
+
+.line2{
+	left: 30%;
+}
+
+.line3{
+	left: 54%;
+}
+
+.line4{
+	left: 77%;
+}
