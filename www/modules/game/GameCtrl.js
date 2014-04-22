@@ -11,11 +11,11 @@ app.controller('GameCtrl', function(
 	var speedModifier = 15;
 	var numberOfCars = 200;
 
-	$scope.gameObjects = [];
+	gameObjects = [];
 
-	$scope.running = true;
-	$scope.gameOver = false;
-	$scope.player = {
+	running = true;
+	gameOver = false;
+	player = {
 		speed: 20,			// current speed
 		acceleration: 0,
 		position: 42,		// percent from left
@@ -25,7 +25,7 @@ app.controller('GameCtrl', function(
 		breaking: false,	// is it breaking currently?
 		parameters: {
 			// modification in the speed / frame
-			acceleration: 0.3,
+			acceleration: 0.2,
 			breaking: -2
 		},
 		max: {
@@ -33,30 +33,25 @@ app.controller('GameCtrl', function(
 		},
 		min:{
 			speed: 10
-		},
-		style:{
-			left: '42%'
 		}
 	}
 
-	$scope.score = 0;
+	score = 0;
 
-	$scope.backgroundPosition = 0;
-	$scope.backgroundStyle = {
-		'background-position-y': '0px'		
-	}
+	backgroundPosition = 0;
+
 	/////////////// Helper functions
 	var random = function(min,max){
 		return Math.floor(Math.random()*(max-min+1)+min);
 	}
 
-	$scope.roundSpeed = function(_speed){
+	var roundSpeed = function(_speed){
 		return Math.round(_speed);
 	}
 
 	/////////////// Menu
 	$scope.exitToMenu = function(){
-		$scope.running = false;
+		running = false;
 		$ionicActionSheet.show({
 			buttons: [
 				{ text: 'Continue game' },
@@ -67,13 +62,13 @@ app.controller('GameCtrl', function(
 			buttonClicked: function(index) {
 				switch(index){
 					case 0: 
-						$scope.running = true;
+						running = true;
 						break;
 					case 1:
 						$state.go('menu');
 						break;
 					case 2:
-						$scope.die();
+						die();
 						break;
 				}
 				return true;
@@ -81,38 +76,40 @@ app.controller('GameCtrl', function(
 		});
 	}
 
-	$scope.startAgain = function(){
+	var startAgain = function(){
 		$state.transitionTo($state.current, $stateParams, {
 			reload: true,
 			inherit: false,
 			notify: true
 		});
 	}
+	$('#startAgain').on('click touch', function(){
+		startAgain();
+	});
 
 	/////////////// Animation helpers
 	var updateSpeed = function(){
-		if ($scope.player.breaking){
-			if ($scope.player.speed > $scope.player.min.speed) {
-				$scope.player.speed += $scope.player.parameters.breaking;
+		if (player.breaking){
+			if (player.speed > player.min.speed) {
+				player.speed += player.parameters.breaking;
 			}else{
-				$scope.player.speed = $scope.player.min.speed;
+				player.speed = player.min.speed;
 			}
 		}else{
-			if ($scope.player.speed < $scope.player.max.speed) {
-				$scope.player.speed += $scope.player.parameters.acceleration;
+			if (player.speed < player.max.speed) {
+				player.speed += player.parameters.acceleration;
 			}
 		}
 	}
 
 	var updateBackground = function(){
-		var _val = $scope.backgroundPosition + ($scope.player.speed / (speedModifier / 2));
+		var _val = backgroundPosition + (player.speed / (speedModifier / 2));
 
 		if (_val > 32000000) {
 			_val = 0;
 		};
-		$scope.backgroundPosition = _val;
-		$scope.backgroundStyle['background-position-y'] = _val + 'px';
-		$scope.score = Math.round(_val / 80);
+		backgroundPosition = _val;
+		score = Math.round(_val / 60);
 	}
 
 	var isDeviceOrientationEventRegistered = false;
@@ -122,13 +119,12 @@ app.controller('GameCtrl', function(
 		if (navigator.accelerometer) {
 			navigator.accelerometer.getCurrentAcceleration(function(acceleration){
 				var modifier = (acceleration.x * -1) / 10;
-				var newPosition = $scope.player.position + modifier;
+				var newPosition = player.position + modifier;
 
 				// if it's not going out from the road
-				if (newPosition > 5 && newPosition < (95 - $scope.player.width)) {
-					$scope.player.position = newPosition;
-					$scope.player.speed -= Math.abs(modifier); // when turning, we reduce the speed a little
-					$scope.player.style['left'] = newPosition + '%';
+				if (newPosition > 5 && newPosition < (95 - player.width)) {
+					player.position = newPosition;
+					player.speed -= Math.abs(modifier); // when turning, we reduce the speed a little
 				};
 			}, function(){
 				console.error('uhh, baj van');
@@ -150,13 +146,12 @@ app.controller('GameCtrl', function(
 				}
 
 				globalTiltingModifier += globalTiltingModifierButton;
-				var newPosition = $scope.player.position + globalTiltingModifier;
+				var newPosition = player.position + globalTiltingModifier;
 
 				// if it's not going out from the road
-				if (newPosition > 5 && newPosition < (95 - $scope.player.width)) {
-					$scope.player.position = newPosition;
-					$scope.player.speed -= Math.abs(globalTiltingModifier / 2); // when turning, we reduce the speed a little
-					$scope.player.style['left'] = newPosition + '%';
+				if (newPosition > 5 && newPosition < (95 - player.width)) {
+					player.position = newPosition;
+					player.speed -= Math.abs(globalTiltingModifier / 2); // when turning, we reduce the speed a little
 					globalTiltingModifierButton = 0;
 				};
 				isDeviceOrientationEventRegistered = true;
@@ -165,8 +160,8 @@ app.controller('GameCtrl', function(
 	}
 
 	var _checkPlayerForOverlaping = function(){
-		for(var _j = $scope.gameObjects.length; _j > 0; _j--){
-			var obj = $scope.gameObjects[_j - 1];
+		for(var _j = gameObjects.length; _j > 0; _j--){
+			var obj = gameObjects[_j - 1];
 
 			// percentage from left for this object
 			var objLeft = (function(line){
@@ -181,12 +176,12 @@ app.controller('GameCtrl', function(
 
 			// when they are overlapping vertically
 			if (
-				($scope.player.topPosition + $scope.player.height) >= obj.position &&
-				(obj.position + $scope.player.height) > $scope.player.topPosition ){
+				(player.topPosition + player.height) >= obj.position &&
+				(obj.position + player.height) > player.topPosition ){
 				// when they are overlapping horizontaly
 				if (
-					objLeft - $scope.player.width < $scope.player.position &&
-					$scope.player.position < objLeft + $scope.player.width) {
+					objLeft - player.width < player.position &&
+					player.position < objLeft + player.width) {
 					return true;
 				};
 			};
@@ -204,8 +199,8 @@ app.controller('GameCtrl', function(
 		};
 
 		if(
-			(obj.position - $scope.player.height) < otherObj.position &&
-			(obj.position + $scope.player.height) > otherObj.position){
+			(obj.position - player.height) < otherObj.position &&
+			(obj.position + player.height) > otherObj.position){
 			return true;
 		}
 
@@ -228,23 +223,26 @@ app.controller('GameCtrl', function(
 			while(overlaping){
 				overlaping = false;
 				assignNewValue(obj);
-				for(var _j = $scope.gameObjects.length; _j > 0; _j--){
-					var otherObj = $scope.gameObjects[_j - 1];
+				for(var _j = gameObjects.length; _j > 0; _j--){
+					var otherObj = gameObjects[_j - 1];
 					if (_checkGameObjectOverlaping(obj, otherObj)) {
 						overlaping = true;
 					};
 				}
 			}
 
-			obj.style = {
-				top: obj.position + '%'
-			};
-
 			obj.run = function(){
 
+				this.position += ((player.speed - this.speed) * player.parameters.acceleration) / speedModifier;
+
+				var onScreen = function (subject){
+					var tolerance = 2
+					return (subject.position + player.height) > (0 - tolerance) && subject.position <= (100 + tolerance)
+				}
+
 				// check if crashing to other AI cars
-				for(var _j = $scope.gameObjects.length; _j > 0; _j--){
-					var otherObj = $scope.gameObjects[_j - 1];
+				for(var _j = gameObjects.length; _j > 0; _j--){
+					var otherObj = gameObjects[_j - 1];
 					if (_checkGameObjectOverlaping(this, otherObj)) {
 						var crashing = {};
 						if(this.position > otherObj.position){
@@ -252,16 +250,16 @@ app.controller('GameCtrl', function(
 						}else{
 							crashing = otherObj;
 						}
-						crashing.style['background-color'] = 'red';
 						crashing.speed = 0;
 						crashing.crashed = true;
+						$('#obj_' + crashing.id).css('background-color', 'red');
 					};
 				}
 
-				this.position += (($scope.player.speed - this.speed) * $scope.player.parameters.acceleration) / speedModifier;
-
 				// updateStyle
-				this.style['top'] = this.position + '%';
+				if(onScreen(this)){
+					$('#obj_' + this.id).css('top', this.position + '%');
+				}
 				
 			};
 
@@ -269,14 +267,18 @@ app.controller('GameCtrl', function(
 				delete this;
 			};
 
-			$scope.gameObjects.push(obj);
+			gameObjects.push(obj);
+			$('#player').after('<div class="car" id="obj_' + obj.id + '"></div>');
+			$('#obj_' + obj.id).css('top', obj.position + '%').addClass('line' + obj.line);
 		};
 	}
 	generateGameObject();
 
-	$scope.die = function(){
-		$scope.gameOver = true;
-		$scope.running = false;
+	var die = function(){
+		gameOver = true;
+		running = false;
+
+		//clearInterval(interval);
 	}
 
 	/////////////// Breaking
@@ -288,11 +290,11 @@ app.controller('GameCtrl', function(
 		};
 
 		br.addEventListener('touchstart', function(){
-			$scope.player.breaking = true;
+			player.breaking = true;
 		});
 
 		br.addEventListener('touchend', function(){
-			$scope.player.breaking = false;
+			player.breaking = false;
 		});
 	};
 	initBreaking();
@@ -312,27 +314,46 @@ app.controller('GameCtrl', function(
 	function gameLoop (argument) {
 		var i;
 
-		$scope.$apply(function () {
-			if($scope.running){
-				updateSpeed();
-				updateBackground();
-				updatePlayerPosition();
-				for (i = 0; i < $scope.gameObjects.length; i++) {
-					$scope.gameObjects[i].run();
-				}
-				if(_checkPlayerForOverlaping()){
-					$scope.die();
-				}
+		if(running){
+			updateSpeed();
+			updateBackground();
+			updatePlayerPosition();
+			for (i = 0; i < gameObjects.length; i++) {
+				gameObjects[i].run();
 			}
-		});
+			if(_checkPlayerForOverlaping()){
+				die();
+			}
+			updateDOM();
+		}
 
 		clearKeyEvent();
 	}
 
 	var interval = setInterval(gameLoop, 1000 / 60);
 
-	// STOP Game Loop
-	$scope.stop = function () {
-		clearInterval(interval);
-	};
+	// Update DOM elements
+	var updateDOM = function(){
+		// Break
+		if(player.breaking)
+			$('#break').addClass('active');
+		else
+			$('#break').removeClass('active');
+
+		// Player
+		$('#player').css('left', player.position + '%');
+
+		// Gameover sign
+		if (gameOver)
+			$('#gameover').show();
+		else
+			$('#gameover').hide();
+
+		// road
+		$('#background').css('background-position-y', backgroundPosition + 'px');
+
+		// Stats
+		$('#stat_speed').html(roundSpeed(player.speed));
+		$('#stat_score').html(score);
+	}
 });
