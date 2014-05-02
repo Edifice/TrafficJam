@@ -1,10 +1,10 @@
 language: node_js
 node_js:
-	- "0.10"
+  - "0.10"
 branches:
-	only:
-		- master
+  only:
+    - master
 install:
-	- npm install -g cordova ionic
-	- ionic platform add android
-	- ionic build android
+  - npm install -g cordova ionic
+  - ionic platform add android
+  - ionic build android
