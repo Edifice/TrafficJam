@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.ionicframework.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>HelloCordova</name>
+    <name>TrafficJam</name>
     <description>
-        An Ionic Framework and Cordova project.
+        A really ugly street trafic simulator
     </description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+    <author email="salidani@gmail.com" href="https://github.com/Edifice/">
+      Daniel Salamon
     </author>
     <content src="index.html" />
     <access origin="*" />

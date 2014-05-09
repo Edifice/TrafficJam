@@ -10,12 +10,12 @@
     <feature name="Accelerometer">
         <param name="android-package" value="org.apache.cordova.devicemotion.AccelListener" />
     </feature>
-    <name>HelloCordova</name>
+    <name>TrafficJam</name>
     <description>
-        An Ionic Framework and Cordova project.
+        A really ugly street trafic simulator
     </description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">
-      Ionic Framework Team
+    <author email="salidani@gmail.com" href="https://github.com/Edifice/">
+      Daniel Salamon
     </author>
     <content src="index.html" />
     <access origin="*" />
